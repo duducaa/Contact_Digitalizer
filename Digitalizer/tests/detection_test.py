@@ -3,11 +3,21 @@ import os
 import cv2 as cv
 import re
 
-ocr = PaddleOCR(use_angle_cls=True, lang='pt')
+class Digitalizer(PaddleOCR):
+    def __init__(self, main_path, **kwargs):
+        super().__init__(**kwargs)
+        self.images_path = [os.path.join(main_path, file) for file in os.listdir(main_path)]
+        self.results = []
+        
+    def detect_text(self):
+        for path in self.images_path:
+            image = cv.imread(path)
+            result = self.ocr(image, cls=True)
+            self.results.append(result)
 
 main_path = 'Digitalizer/tests/detection_data'
-images_path = [os.path.join(main_path, file) for file in os.listdir(main_path)]
-for index, path in enumerate(images_path):
+ocr = Digitalizer(main_path, use_angle_cls=True, lang='pt')
+for index, path in enumerate(ocr.images_path):
     image = cv.imread(path)
     
     results = ocr.ocr(image, cls=True)
@@ -25,5 +35,5 @@ for index, path in enumerate(images_path):
     
     cv.imshow('Display', image)
     cv.waitKey()
-    print("==============")
+    cv.destroyAllWindows()
     
