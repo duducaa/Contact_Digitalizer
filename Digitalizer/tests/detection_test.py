@@ -2,7 +2,7 @@ from paddleocr import PaddleOCR
 import os
 import cv2 as cv
 import re
-from digitalizer import Digitalizer
+from Digitalizer.digitalizer import Digitalizer
 
 main_path = 'Digitalizer/tests/detection_data'
 images_paths = [os.path.join(main_path, file) for file in os.listdir(main_path)]
