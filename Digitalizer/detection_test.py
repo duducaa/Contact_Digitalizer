@@ -2,9 +2,9 @@ from paddleocr import PaddleOCR
 import os
 import cv2 as cv
 import re
-from Digitalizer.digitalizer import Digitalizer
+from digitalizer import Digitalizer
 
-main_path = 'Digitalizer/tests/detection_data'
+main_path = 'Digitalizer/detection_data'
 images_paths = [os.path.join(main_path, file) for file in os.listdir(main_path)]
 digitalizer = Digitalizer(images_paths, use_angle_cls=True, lang='pt')
 digitalizer.detect_text('Phone')

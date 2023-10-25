@@ -1,5 +1,6 @@
 from paddleocr import PaddleOCR
 import re
+import cv2 as cv
 
 class Digitalizer(PaddleOCR):
     def __init__(self, paths, **kwargs):
