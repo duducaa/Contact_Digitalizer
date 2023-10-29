@@ -3,10 +3,9 @@ import re
 import cv2 as cv
 
 class Digitalizer(PaddleOCR):
-    def __init__(self, paths, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.patterns = {'Instagram': '', 'Facebook': '', 'Email': '', 'Phone': ''}
-        self.contacts = {'Instagram': [], 'Facebook': [], 'Email': [], 'Phone': []}
     
     def read_image_batch(self, paths):
         return [cv.imread(path) for path in paths]
@@ -22,15 +21,15 @@ class Digitalizer(PaddleOCR):
         
         return False, ''
     
-    def detect_text(self, paths, specific_pattern=''):
-        results = []
-        for image in self.read_image_batch(paths):
-            result = self.ocr(image, cls=True)
-            for line in result[0]:
-                word = line[1][0]
-                matches, font = self.match_pattern(word, specific_pattern)
-                if not matches: continue
-                self.contacts[font].append(word)
-            results.append([image, result])
+    def detect_text(self, image, specific_pattern=''):
+        # detections = {'Instagram': [], 'Facebook': [], 'Email': [], 'Phone': []}
+        detections = []
+        result = self.ocr(image, cls=True)
+        for line in result[0]:
+            word = line[1][0]
+            score = line[1][1]
+            matches, font = self.match_pattern(word, specific_pattern)
+            if not matches: continue
+            detections.append([word, score])
 
-        return results
+        return detections
