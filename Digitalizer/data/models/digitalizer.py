@@ -5,31 +5,26 @@ import cv2 as cv
 class Digitalizer(PaddleOCR):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.patterns = {'Instagram': '', 'Facebook': '', 'Email': '', 'Phone': ''}
-    
-    def read_image_batch(self, paths):
-        return [cv.imread(path) for path in paths]
+        self.patterns = {
+            'Instagram': '', 
+            'Facebook': '', 
+            'Email': '', 
+            'Phone': r'\(?\d{2,3}\)?[-.\s]?9?[-.\s]?\d{4}[-.\s]?\d{4}|\b0800?\s?\d{3}\s?\d{4}\b|\b9?[-.\s]?\d{4}[-.\s]?\d{4}\b'}
 
-    def match_pattern(self, word, specific_pattern=''):
-        if specific_pattern != '':
-            sp_pattern = self.patterns[specific_pattern]
-            return re.match(sp_pattern, word), specific_pattern
-        else:
-            for font, pattern in self.patterns.items():
-                if re.match(pattern, word):
-                    return True, font
-        
-        return False, ''
+    def match_patterns(self, word, score, contacts):
+        for font, pattern in self.patterns.items():
+            if pattern == '': continue
+            matches = re.findall(pattern, word)
+            for match in matches:
+                contacts[font].append([match, score])
+            if len(matches) > 0: break
     
-    def detect_text(self, image, specific_pattern=''):
-        # detections = {'Instagram': [], 'Facebook': [], 'Email': [], 'Phone': []}
-        detections = []
+    def detect_text(self, image):
         result = self.ocr(image, cls=True)
+        contacts = {key: [] for key in self.patterns.keys()}
         for line in result[0]:
             word = line[1][0]
             score = line[1][1]
-            matches, font = self.match_pattern(word, specific_pattern)
-            if not matches: continue
-            detections.append([word, score])
+            self.match_patterns(word, score, contacts)
 
-        return detections
+        return contacts

@@ -24,10 +24,9 @@ def make_detect():
             image = np.array(image_data).astype(np.uint8)
 
             digitalizer = Digitalizer(use_angle_cls=True, lang='pt')
-            results = digitalizer.detect_text(image)
-            print('lololololololololo')
+            contacts = digitalizer.detect_text(image)
 
-            return json.dumps({'Message': 'Contacts Founded!!!', 'contacts': results}), 200
+            return json.dumps({'Message': 'Contacts Founded!!!', 'contacts': contacts}), 200
         except Exception as err:
             return json.dumps({'Error': f'{err}'}), 501
     else:
