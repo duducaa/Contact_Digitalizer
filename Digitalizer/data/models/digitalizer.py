@@ -6,9 +6,10 @@ class Digitalizer(PaddleOCR):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.patterns = {
-            'Instagram': '', 
-            'Facebook': '', 
-            'Email': '', 
+            'Instagram': r'^@', 
+            #'Facebook': '',
+            'Site': r'\b(www\.)?w+\.\w{3}(\.\w{2})?\b',
+            'Email': r'\b\w+@\w+(\.\w{2, 3}){1, 2}', 
             'Phone': r'\(?\d{2,3}\)?[-.\s]?9?[-.\s]?\d{4}[-.\s]?\d{4}|\b0800?\s?\d{3}\s?\d{4}\b|\b9?[-.\s]?\d{4}[-.\s]?\d{4}\b'}
 
     def match_patterns(self, word, score, contacts):

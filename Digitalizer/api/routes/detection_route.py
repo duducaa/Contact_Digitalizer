@@ -17,14 +17,10 @@ def make_detect():
     if request.method == 'POST':
         detection_json = request.get_json()
         data = detection_json[0]
-
         try:
             decoded = base64.b64decode(data['image'])
-            image_data = json.loads(decoded)
-            image = np.array(image_data).astype(np.uint8)
-
             digitalizer = Digitalizer(use_angle_cls=True, lang='pt')
-            contacts = digitalizer.detect_text(image)
+            contacts = digitalizer.detect_text(decoded)
 
             return json.dumps({'Message': 'Contacts Founded!!!', 'contacts': contacts}), 200
         except Exception as err:

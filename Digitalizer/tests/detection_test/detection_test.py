@@ -4,7 +4,7 @@ import json
 import base64
 import os
 
-main_path = 'detection_data'
+main_path = 'tests/detection_test/detection_data'
 images_paths = [os.path.join(main_path, file) for file in os.listdir(main_path)]
 
 BASE_URL = 'http://127.0.0.1:5000/'
